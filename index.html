@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malia 007B | Painel de Limpeza</title>
+    <style>
+        /* MANTIDO EXATAMENTE O MESMO CSS DO DESIGN ANTERIOR */
+        :root { --bg-color: #050a12; --card-bg: #101E30; --primary: #599DD6; --success: #5F9339; --text-light: #F0F2F5; --text-muted: #8E959B; --danger: #D65959; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 600px; }
+        .brand-logo { text-align: center; margin-bottom: 5px; }
+        .brand-name { font-family: 'Georgia', serif; font-size: 34px; letter-spacing: 6px; color: var(--text-light); display: block; margin-bottom: 2px; }
+        .brand-unit { font-size: 14px; letter-spacing: 3px; color: var(--primary); font-weight: bold; text-transform: uppercase; }
+        .header-subtitle { color: var(--text-muted); font-size: 13px; margin-top: 15px; text-transform: uppercase; letter-spacing: 2px; text-align: center; margin-bottom: 30px; }
+        #login-screen { margin-top: 10vh; background-color: var(--card-bg); padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #1a2c42; text-align: center; }
+        .admin-form { background-color: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); border: 1px solid #1a2c42; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 15px; text-align: left; }
+        .form-group label { font-size: 13px; color: var(--text-muted); margin-bottom: 5px; }
+        .form-group input, .form-group select { padding: 12px; border-radius: 8px; border: 1px solid var(--text-muted); background-color: var(--bg-color); color: var(--text-light); font-size: 15px; outline: none; }
+        .btn-main { width: 100%; padding: 14px; background-color: var(--primary); color: var(--bg-color); border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
+        .btn-main:hover { opacity: 0.9; }
+        .btn-secondary { width: 100%; padding: 14px; background-color: transparent; color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 8px; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .btn-secondary:hover { color: var(--text-light); border-color: var(--text-light); }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logout-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 14px; font-weight: bold; text-decoration: none;}
+        .task-list { display: flex; flex-direction: column; gap: 15px; }
+        .task-card { background-color: var(--card-bg); border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-left: 5px solid var(--primary); transition: 0.3s; }
+        .task-card.completed { border-left-color: var(--success); opacity: 0.7; }
+        .task-info h3 { margin: 0 0 5px 0; font-size: 18px; }
+        .task-info p { margin: 0; font-size: 14px; color: var(--text-muted); }
+        .task-actions { display: flex; gap: 10px; }
+        .btn-action { padding: 10px 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; text-decoration: none;}
+        .btn-check { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .completed .btn-check { background-color: var(--success); border-color: var(--success); color: white; }
+        .btn-delete { background-color: transparent; color: var(--danger); border: 1px solid var(--danger); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- SE NÃO ESTIVER LOGADO (Mostra a tela de Login) -->
+        {% if not role %}
+        <div id="login-screen">
+            <div class="brand-logo">
+                <span class="brand-name">MALIA</span>
+                <span class="brand-unit">Muro Alto • 007B</span>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 14px;">Controlo de Acessos</p>
+            
+            <form action="/login" method="POST">
+                <input type="hidden" name="role" value="equipe">
+                <button type="submit" class="btn-main">Acesso: Equipa de Limpeza</button>
+            </form>
+
+            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão (Mãe)</button>
+            
+            <form action="/login" method="POST" id="password-box" style="display: none; margin-top: 20px;">
+                <input type="hidden" name="role" value="admin">
+                <input type="password" name="password" placeholder="Palavra-passe..." class="form-group" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: var(--bg-color); color: white; border: 1px solid var(--primary);">
+                <button type="submit" class="btn-main" style="background-color: var(--success);">Entrar no Sistema</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- SE ESTIVER LOGADO (Mostra o Sistema) -->
+        {% if role %}
+        <div id="app-screen">
+            <div class="top-bar">
+                <div>
+                    <div class="brand-logo" style="text-align: left;">
+                        <span class="brand-name" style="font-size: 22px; letter-spacing: 3px;">MALIA</span>
+                        <span class="brand-unit" style="font-size: 11px;">007B</span>
+                    </div>
+                </div>
+                <a href="/logout" class="logout-btn">Sair [x]</a>
+            </div>
+
+            <p class="header-subtitle">
+                {% if role == 'admin' %}Painel de Gestão (Editora){% else %}Agenda da Equipa de Limpeza{% endif %}
+            </p>
+
+            <!-- Formulário Visível Apenas para a Mãe (admin) -->
+            {% if role == 'admin' %}
+            <form action="/add" method="POST" class="admin-form">
+                <div class="form-group">
+                    <label>Data e Hora do Serviço</label>
+                    <input type="datetime-local" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Serviço</label>
+                    <select name="task_type">
+                        <option value="Check-out (Limpeza Completa)">Check-out (Limpeza Completa)</option>
+                        <option value="Limpeza de Manutenção">Limpeza de Manutenção</option>
+                        <option value="Preparação VIP">Preparação VIP (Detalhes Extras)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nome do Hóspede (Opcional)</label>
+                    <input type="text" name="guest" placeholder="Ex: Família Silva">
+                </div>
+                <button type="submit" class="btn-main">Agendar Limpeza</button>
+            </form>
+            {% endif %}
+
+            <!-- Lista de Tarefas (Lida diretamente do Banco de Dados) -->
+            <div class="task-list">
+                {% for task in tasks %}
+                <div class="task-card {% if task.completed %}completed{% endif %}">
+                    <div class="task-info">
+                        <h3>{{ task.date_str }}</h3>
+                        <p><strong>Serviço:</strong> {{ task.task_type }}</p>
+                        <p><strong>Hóspede:</strong> {{ task.guest or 'Não informado' }}</p>
+                    </div>
+                    <div class="task-actions">
+                        {% if role == 'equipe' %}
+                            <a href="/toggle/{{ task.id }}" class="btn-action btn-check">
+                                {% if task.completed %}✅ Concluído{% else %}Marcar Feito{% endif %}
+                            </a>
+                        {% endif %}
+                        {% if role == 'admin' %}
+                            <a href="/delete/{{ task.id }}" class="btn-action btn-delete" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
