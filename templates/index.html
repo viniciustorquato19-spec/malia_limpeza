@@ -63,7 +63,7 @@
             
             <form action="/login" method="POST" id="password-box" style="display: none; margin-top: 20px;">
                 <input type="hidden" name="role" value="admin">
-                <input type="password" name="password" inputmode="numeric" pattern="[0-9]*" placeholder="Digite a senha..." class="form-group" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: var(--bg-color); color: white; border: 1px solid var(--primary);">
+                <input type="password" name="password" inputmode="numeric" pattern="[0-9]*" oninput="if(this.value === 'SUA_SENHA') this.form.submit();" class="form-group" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: var(--bg-color); color: white; border: 1px solid var(--primary);">
                 <button type="submit" class="btn-main" style="background-color: var(--success);">Entrar no Sistema</button>
             </form>
         </div>
@@ -120,7 +120,7 @@
                     <div class="task-info">
                         <!-- Mostra o formato visual exato que a sua mãe usa: 01/10 a 08/10 -->
                         <h3 class="date-title">
-                            📅 {{ task.checkin.strftime('%d/%m') }} a {{ task.checkout.strftime('%d/%m') }}
+                            📅 {{ task.checkin.strftime('%d/%m/%y') }} a {{ task.checkout.strftime('%d/%m/%y') }}
                         </h3>
                         <p class="guest-info">
                             👥 {{ task.guests }} Hóspedes
