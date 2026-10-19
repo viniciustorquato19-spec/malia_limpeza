@@ -112,7 +112,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Observação Especial (Opcional)</label>
+                    <label>Observação (Opcional)</label>
                     <input type="text" name="observation">
                 </div>
                 <button type="submit" class="btn-main">Adicionar Nova Reserva</button>
@@ -125,7 +125,7 @@
                 <div class="task-card {% if task.completed %}completed{% endif %}">
                     <div class="task-info">
                         <h3 class="date-title">
-                            📅 {{ task.checkin.strftime('%d/%m/%Y') }} a {{ task.checkout.strftime('%d/%m/%Y') }}
+                            📅 {{ task.checkin.strftime('%d/%m/%y') }} a {{ task.checkout.strftime('%d/%m/%y') }}
                         </h3>
                         <p class="guest-info">
                             👥 {{ task.guests }} Hóspedes
