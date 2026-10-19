@@ -36,7 +36,6 @@
         .completed .btn-check { background-color: var(--success); border-color: var(--success); color: white; }
         .btn-delete { background-color: transparent; color: var(--danger); border: 1px solid var(--danger); }
         
-        /* Estilos do Novo Layout dos Cards */
         .date-title { font-size: 20px; color: var(--text-light); margin: 0 0 8px 0; }
         .guest-info { font-size: 16px; color: var(--primary); margin: 0 0 8px 0; font-weight: bold; }
         .obs-tag { font-size: 13px; color: var(--text-muted); background-color: #0a1320; padding: 6px 10px; border-radius: 6px; margin: 0; display: inline-block; border: 1px solid #1a2c42; }
@@ -52,27 +51,27 @@
                 <span class="brand-name">MALIA</span>
                 <span class="brand-unit">Muro Alto • 007B</span>
             </div>
-            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 14px;">Controle de Acessos</p>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 14px;">Controlo de Acessos</p>
             
             <form action="/login" method="POST">
                 <input type="hidden" name="role" value="equipe">
-                <button type="submit" class="btn-main">Acesso: Equipe de Limpeza</button>
+                <button type="submit" class="btn-main">Acesso: Equipa de Limpeza</button>
             </form>
 
-            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão</button>
+            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão (Mãe)</button>
             
             <form action="/login" method="POST" id="password-box" style="display: {% if error %}block{% else %}none{% endif %}; margin-top: 20px;">
-    <input type="hidden" name="role" value="admin">
-    
-    {% if error %}
-    <p style="color: var(--danger); font-size: 14px; font-weight: bold; margin-bottom: 12px; background: rgba(214, 89, 89, 0.1); padding: 10px; border-radius: 8px; border: 1px solid var(--danger);">
-        ⚠️ {{ error }}
-    </p>
-    {% endif %}
+                <input type="hidden" name="role" value="admin">
+                
+                {% if error %}
+                <p style="color: #FF4D4D; font-size: 14px; font-weight: bold; margin-bottom: 12px; background: rgba(255, 77, 77, 0.12); padding: 10px; border-radius: 8px; border: 1px solid #FF4D4D; text-align: center;">
+                    ⚠️ {{ error }}
+                </p>
+                {% endif %}
 
-    <input type="password" name="password" inputmode="numeric" pattern="[0-9]*" oninput="if(this.value === 'malia') this.form.submit();" placeholder="Digite a senha..." class="form-group" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: var(--bg-color); color: white; border: 1px solid var(--primary);">
-    <button type="submit" class="btn-main" style="background-color: var(--success);">Entrar no Sistema</button>
-</form>
+                <input type="password" name="password" inputmode="numeric" pattern="[0-9]*" placeholder="Digite a senha..." class="form-group" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: var(--bg-color); color: white; border: 1px solid var(--primary);">
+                <button type="submit" class="btn-main" style="background-color: var(--success);">Entrar no Sistema</button>
+            </form>
         </div>
         {% endif %}
 
@@ -90,7 +89,7 @@
             </div>
 
             <p class="header-subtitle">
-                {% if role == 'admin' %}Painel de Gestão (Editora){% else %}Agenda da Equipe{% endif %}
+                {% if role == 'admin' %}Painel de Gestão (Editora){% else %}Agenda da Equipa de Limpeza{% endif %}
             </p>
 
             <!-- FORMULÁRIO PARA A MÃE -->
@@ -125,9 +124,8 @@
                 {% for task in tasks %}
                 <div class="task-card {% if task.completed %}completed{% endif %}">
                     <div class="task-info">
-                        <!-- Mostra o formato visual exato que a sua mãe usa: 01/10 a 08/10 -->
                         <h3 class="date-title">
-                            📅 {{ task.checkin.strftime('%d/%m/%y') }} a {{ task.checkout.strftime('%d/%m/%y') }}
+                            📅 {{ task.checkin.strftime('%d/%m/%Y') }} a {{ task.checkout.strftime('%d/%m/%Y') }}
                         </h3>
                         <p class="guest-info">
                             👥 {{ task.guests }} Hóspedes
