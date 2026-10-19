@@ -9,12 +9,13 @@ app.secret_key = 'malia_secreto_007b'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///agenda.db'
 db = SQLAlchemy(app)
 
-# --- MODELO DO BANCO DE DADOS ---
+# --- NOVO MODELO DO BANCO DE DADOS ---
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date_str = db.Column(db.String(100), nullable=False)
-    task_type = db.Column(db.String(100), nullable=False)
-    guest = db.Column(db.String(100))
+    guests = db.Column(db.Integer, nullable=False)
+    checkin = db.Column(db.Date, nullable=False)
+    checkout = db.Column(db.Date, nullable=False)
+    observation = db.Column(db.String(200))
     completed = db.Column(db.Boolean, default=False)
 
 # Cria o banco de dados se não existir
@@ -22,13 +23,11 @@ with app.app_context():
     db.create_all()
 
 # --- ROTAS DA APLICAÇÃO ---
-
 @app.route('/')
 def index():
-    # Verifica qual é o perfil logado atual (admin ou equipe)
     role = session.get('role')
-    # Puxa todas as tarefas do banco de dados (da mais recente para a mais antiga)
-    tasks = Task.query.order_by(Task.id.desc()).all()
+    # Ordena as tarefas pela data de check-in (crescente)
+    tasks = Task.query.order_by(Task.checkin.asc()).all()
     return render_template('index.html', role=role, tasks=tasks)
 
 @app.route('/login', methods=['POST'])
@@ -51,16 +50,17 @@ def logout():
 @app.route('/add', methods=['POST'])
 def add_task():
     if session.get('role') == 'admin':
-        raw_date = request.form.get('date')
-        task_type = request.form.get('task_type')
-        guest = request.form.get('guest')
+        guests = request.form.get('guests')
+        checkin_str = request.form.get('checkin')
+        checkout_str = request.form.get('checkout')
+        observation = request.form.get('observation')
 
-        # Formata a data que vem do formulário HTML
-        if raw_date:
-            date_obj = datetime.strptime(raw_date, '%Y-%m-%dT%H:%M')
-            formatted_date = date_obj.strftime('%d/%m/%Y - %H:%M')
+        if checkin_str and checkout_str and guests:
+            # Converte as datas do formulário para o formato do banco de dados
+            checkin_date = datetime.strptime(checkin_str, '%Y-%m-%d').date()
+            checkout_date = datetime.strptime(checkout_str, '%Y-%m-%d').date()
             
-            new_task = Task(date_str=formatted_date, task_type=task_type, guest=guest)
+            new_task = Task(guests=int(guests), checkin=checkin_date, checkout=checkout_date, observation=observation)
             db.session.add(new_task)
             db.session.commit()
             
