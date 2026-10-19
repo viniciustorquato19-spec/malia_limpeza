@@ -36,7 +36,7 @@ def login():
     role_requested = request.form.get('role')
     password = request.form.get('password')
 
-    if role_requested == 'admin' and password == 'malia':
+    if role_requested == 'admin' and password == '120699':
         session['role'] = 'admin'
     elif role_requested == 'equipe':
         session['role'] = 'equipe'
