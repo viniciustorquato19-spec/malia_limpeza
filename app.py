@@ -30,7 +30,7 @@ def login():
     password = request.form.get('password')
 
     if role_requested == 'admin':
-        if password == 'malia':  # Altere aqui se a sua senha for diferente
+        if password == '120699':  # Altere aqui se a sua senha for diferente
             session['role'] = 'admin'
             return redirect(url_for('index'))
         else:
