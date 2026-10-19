@@ -47,23 +47,23 @@ def logout():
     session.pop('role', None)
     return redirect(url_for('index'))
 
-@app.route('/add', methods=['POST'])
-def add_task():
-    if session.get('role') == 'admin':
-        guests = request.form.get('guests')
-        checkin_str = request.form.get('checkin')
-        checkout_str = request.form.get('checkout')
-        observation = request.form.get('observation')
+@app.route('/login', methods=['POST'])
+def login():
+    role_requested = request.form.get('role')
+    password = request.form.get('password')
 
-        if checkin_str and checkout_str and guests:
-            # Converte as datas do formulário para o formato do banco de dados
-            checkin_date = datetime.strptime(checkin_str, '%Y-%m-%d').date()
-            checkout_date = datetime.strptime(checkout_str, '%Y-%m-%d').date()
+    if role_requested == 'admin':
+        if password == 'malia':  # Altere aqui caso sua senha seja diferente
+            session['role'] = 'admin'
+            return redirect(url_for('index'))
+        else:
+            # Se a senha estiver errada, envia uma mensagem de erro
+            return render_template('index.html', error="Senha incorreta! Tente novamente.")
             
-            new_task = Task(guests=int(guests), checkin=checkin_date, checkout=checkout_date, observation=observation)
-            db.session.add(new_task)
-            db.session.commit()
-            
+    elif role_requested == 'equipe':
+        session['role'] = 'equipe'
+        return redirect(url_for('index'))
+    
     return redirect(url_for('index'))
 
 @app.route('/toggle/<int:task_id>')
