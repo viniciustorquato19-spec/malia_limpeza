@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Malia 007B | Painel de Limpeza</title>
     <style>
-        :root { --bg-color: #050a12; --card-bg: #101E30; --primary: #599DD6; --success: #5F9339; --text-light: #F0F2F5; --text-muted: #8E959B; --danger: #D65959; }
+        :root { --bg-color: #050a12; --card-bg: #101E30; --primary: #599DD6; --success: #5F9339; --text-light: #F0F2F5; --text-muted: #8E959B; --danger: #D65959; --warning: #E2B93B; }
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-light); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .container { width: 100%; max-width: 600px; }
         .brand-logo { text-align: center; margin-bottom: 5px; }
@@ -20,7 +20,7 @@
         
         .btn-main { width: 100%; padding: 14px; background-color: var(--primary); color: var(--bg-color); border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
         .btn-main:hover { opacity: 0.9; }
-        .btn-secondary { width: 100%; padding: 14px; background-color: transparent; color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 8px; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .btn-secondary { width: 100%; padding: 14px; background-color: transparent; color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 8px; font-size: 15px; cursor: pointer; transition: 0.2s; display: block; text-align: center; text-decoration: none; box-sizing: border-box;}
         .btn-secondary:hover { color: var(--text-light); border-color: var(--text-light); }
         
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
@@ -35,16 +35,19 @@
         .btn-check { background-color: transparent; border: 2px solid var(--primary); color: var(--primary); }
         .completed .btn-check { background-color: var(--success); border-color: var(--success); color: white; }
         .btn-delete { background-color: transparent; color: var(--danger); border: 1px solid var(--danger); }
+        .btn-edit { background-color: transparent; color: var(--warning); border: 1px solid var(--warning); }
         
         .date-title { font-size: 20px; color: var(--text-light); margin: 0 0 8px 0; }
         .guest-info { font-size: 16px; color: var(--primary); margin: 0 0 8px 0; font-weight: bold; }
         .obs-tag { font-size: 13px; color: var(--text-muted); background-color: #0a1320; padding: 6px 10px; border-radius: 6px; margin: 0; display: inline-block; border: 1px solid #1a2c42; }
+        
+        /* Novo estilo para o título do Mês */
+        .month-header { color: var(--primary); font-size: 22px; margin: 25px 0 5px 0; border-bottom: 2px solid #1a2c42; padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
     <div class="container">
         
-        <!-- TELA DE LOGIN -->
         {% if not role %}
         <div id="login-screen">
             <div class="brand-logo">
@@ -58,24 +61,21 @@
                 <button type="submit" class="btn-main">Acesso: Governança</button>
             </form>
 
-            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão</button>
+            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão (Mãe)</button>
             
             <form action="/login" method="POST" id="password-box" style="display: {% if error %}block{% else %}none{% endif %}; margin-top: 20px;">
                 <input type="hidden" name="role" value="admin">
-                
                 {% if error %}
                 <p style="color: #FF4D4D; font-size: 14px; font-weight: bold; margin-bottom: 12px; background: rgba(255, 77, 77, 0.12); padding: 10px; border-radius: 8px; border: 1px solid #FF4D4D; text-align: center;">
                     ⚠️ {{ error }}
                 </p>
                 {% endif %}
-
                 <input type="password" name="password" inputmode="numeric" pattern="[0-9]*" placeholder="Digite a senha..." class="form-group" style="width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 12px; border-radius: 8px; background: var(--bg-color); color: white; border: 1px solid var(--primary);">
                 <button type="submit" class="btn-main" style="background-color: var(--success);">Entrar no Sistema</button>
             </form>
         </div>
         {% endif %}
 
-        <!-- TELA DO APLICATIVO -->
         {% if role %}
         <div id="app-screen">
             <div class="top-bar">
@@ -92,62 +92,96 @@
                 {% if role == 'admin' %}Painel de Gestão (Editora){% else %}Agenda da Equipe{% endif %}
             </p>
 
-            <!-- FORMULÁRIO PARA A MÃE -->
             {% if role == 'admin' %}
-            <form action="/add" method="POST" class="admin-form">
-                <div class="form-group">
-                    <label>Número de Hóspedes</label>
-                    <input type="number" name="guests" inputmode="numeric" pattern="[0-9]*" required>
-                </div>
-                
-                <div style="display: flex; gap: 10px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Data de Check-in</label>
-                        <input type="date" name="checkin" required>
+                <!-- SE ESTIVER A EDITAR UMA TAREFA -->
+                {% if edit_task %}
+                <form action="/edit/{{ edit_task.id }}" method="POST" class="admin-form" style="border-color: var(--warning);">
+                    <h3 style="color: var(--warning); margin-top: 0; text-align: center;">✏️ A Editar Reserva</h3>
+                    <div class="form-group">
+                        <label>Número de Hóspedes</label>
+                        <input type="number" name="guests" inputmode="numeric" pattern="[0-9]*" required value="{{ edit_task.guests }}">
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Data de Check-out</label>
-                        <input type="date" name="checkout" required>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Data de Check-in</label>
+                            <input type="date" name="checkin" required value="{{ edit_task.checkin.strftime('%Y-%m-%d') }}">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Data de Check-out</label>
+                            <input type="date" name="checkout" required value="{{ edit_task.checkout.strftime('%Y-%m-%d') }}">
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label>Observação (Opcional)</label>
+                        <input type="text" name="observation" value="{{ edit_task.observation or '' }}">
+                    </div>
+                    <button type="submit" class="btn-main" style="background-color: var(--warning); color: #000;">Guardar Alterações</button>
+                    <a href="/" class="btn-secondary">Cancelar</a>
+                </form>
 
-                <div class="form-group">
-                    <label>Observação (Opcional)</label>
-                    <input type="text" name="observation">
-                </div>
-                <button type="submit" class="btn-main">Adicionar Nova Reserva</button>
-            </form>
+                <!-- SE FOR ADICIONAR UMA NOVA (PADRÃO) -->
+                {% else %}
+                <form action="/add" method="POST" class="admin-form">
+                    <div class="form-group">
+                        <label>Número de Hóspedes</label>
+                        <input type="number" name="guests" inputmode="numeric" pattern="[0-9]*" required>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Data de Check-in</label>
+                            <input type="date" name="checkin" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Data de Check-out</label>
+                            <input type="date" name="checkout" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Observação (Opcional)</label>
+                        <input type="text" name="observation">
+                    </div>
+                    <button type="submit" class="btn-main">Adicionar Nova Reserva</button>
+                </form>
+                {% endif %}
             {% endif %}
 
-            <!-- LISTA DE TAREFAS -->
+            <!-- LISTA DE TAREFAS AGRUPADA POR MÊS -->
             <div class="task-list">
-                {% for task in tasks %}
-                <div class="task-card {% if task.completed %}completed{% endif %}">
-                    <div class="task-info">
-                        <h3 class="date-title">
-                            📅 {{ task.checkin.strftime('%d/%m/%y') }} a {{ task.checkout.strftime('%d/%m/%y') }}
-                        </h3>
-                        <p class="guest-info">
-                            👥 {{ task.guests }} Hóspedes
-                        </p>
-                        {% if task.observation %}
-                        <p class="obs-tag">
-                            📌 {{ task.observation }}
-                        </p>
-                        {% endif %}
-                    </div>
+                {% for month, tasks_in_month in grouped_tasks.items() %}
+                    <!-- Título do Mês -->
+                    <h2 class="month-header">{{ month }}</h2>
                     
-                    <div class="task-actions">
-                        {% if role == 'equipe' %}
-                            <a href="/toggle/{{ task.id }}" class="btn-action btn-check">
-                                {% if task.completed %}✅ Feito{% else %}Marcar<br>Feito{% endif %}
-                            </a>
-                        {% endif %}
-                        {% if role == 'admin' %}
-                            <a href="/delete/{{ task.id }}" class="btn-action btn-delete" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
-                        {% endif %}
+                    <!-- Cartões desse mês -->
+                    {% for task in tasks_in_month %}
+                    <div class="task-card {% if task.completed %}completed{% endif %}">
+                        <div class="task-info">
+                            <h3 class="date-title">
+                                📅 {{ task.checkin.strftime('%d/%m') }} a {{ task.checkout.strftime('%d/%m') }}
+                            </h3>
+                            <p class="guest-info">
+                                👥 {{ task.guests }} Hóspedes
+                            </p>
+                            {% if task.observation %}
+                            <p class="obs-tag">
+                                📌 {{ task.observation }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="task-actions" style="flex-direction: column; gap: 5px;">
+                            {% if role == 'equipe' %}
+                                <a href="/toggle/{{ task.id }}" class="btn-action btn-check">
+                                    {% if task.completed %}✅ Feito{% else %}Marcar<br>Feito{% endif %}
+                                </a>
+                            {% endif %}
+                            
+                            {% if role == 'admin' %}
+                                <a href="/edit/{{ task.id }}" class="btn-action btn-edit">Editar</a>
+                                <a href="/delete/{{ task.id }}" class="btn-action btn-delete" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
+                    {% endfor %}
                 {% endfor %}
             </div>
             
