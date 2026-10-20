@@ -55,10 +55,10 @@
             
             <form action="/login" method="POST">
                 <input type="hidden" name="role" value="equipe">
-                <button type="submit" class="btn-main">Acesso: Equipa de Limpeza</button>
+                <button type="submit" class="btn-main">Acesso: Governança</button>
             </form>
 
-            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão (Mãe)</button>
+            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão</button>
             
             <form action="/login" method="POST" id="password-box" style="display: {% if error %}block{% else %}none{% endif %}; margin-top: 20px;">
                 <input type="hidden" name="role" value="admin">
@@ -89,7 +89,7 @@
             </div>
 
             <p class="header-subtitle">
-                {% if role == 'admin' %}Painel de Gestão (Editora){% else %}Agenda da Equipa de Limpeza{% endif %}
+                {% if role == 'admin' %}Painel de Gestão (Editora){% else %}Agenda da Equipe{% endif %}
             </p>
 
             <!-- FORMULÁRIO PARA A MÃE -->
