@@ -54,14 +54,14 @@
                 <span class="brand-name">MALIA</span>
                 <span class="brand-unit">Muro Alto • 007B</span>
             </div>
-            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 14px;">Controlo de Acessos</p>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 14px;">Controle de Acessos</p>
             
             <form action="/login" method="POST">
                 <input type="hidden" name="role" value="equipe">
                 <button type="submit" class="btn-main">Acesso: Governança</button>
             </form>
 
-            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão (Mãe)</button>
+            <button class="btn-secondary" onclick="document.getElementById('password-box').style.display = 'block';">Acesso: Gestão</button>
             
             <form action="/login" method="POST" id="password-box" style="display: {% if error %}block{% else %}none{% endif %}; margin-top: 20px;">
                 <input type="hidden" name="role" value="admin">
