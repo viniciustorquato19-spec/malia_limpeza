@@ -108,7 +108,7 @@
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label>Data de Check-out</label>
-                            <input type="date" name="checkout" id="checkout_edit" required value="{{ edit_task.checkout.strftime('%Y-%m-%d') }}">
+                            <input type="date" name="checkout" id="checkout_edit" required value="{{ edit_task.checkout.strftime('%Y-%m-%d') }}" oninvalid="this.setCustomValidity('A data do check-out deve ser superior a do check-in')" oninput="this.setCustomValidity('')">
                         </div>
                     </div>
                     <div class="form-group">
@@ -133,7 +133,7 @@
                         </div>
                         <div class="form-group" style="flex: 1;">
                             <label>Data de Check-out</label>
-                            <input type="date" name="checkout" id="checkout_add" required>
+                            <input type="date" name="checkout" id="checkout_add" required oninvalid="this.setCustomValidity('A data do check-out deve ser superior a do check-in')" oninput="this.setCustomValidity('')">
                         </div>
                     </div>
                     <div class="form-group">
